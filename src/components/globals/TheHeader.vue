@@ -18,7 +18,7 @@
         >
           mdi-magnify
         </v-icon>
-        <notification />
+        <notification v-if="currentUser" />
         <v-btn
           v-if="!currentUser"
           text
