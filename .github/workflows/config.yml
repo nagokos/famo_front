@@ -2,6 +2,9 @@ name: vue.js
 
 on: push
 
+env:
+  NODE_ENV: test
+
 jobs:
   build:
 
@@ -9,10 +12,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js 
       uses: actions/setup-node@v2
       with:
         node-version: 14
+
     - run: yarn install
+
     - name: lint
       run: yarn run lint
+
+    - name: slack - GitHub Actions Slack integration
+        uses: act10ns/slack@v1.2.2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
