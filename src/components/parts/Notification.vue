@@ -1,12 +1,5 @@
 <template>
-  <v-menu
-    offset-y
-    left
-    bottom
-    v-if="currentUser"
-    :close-on-content-click="false"
-    v-model="menu"
-  >
+  <v-menu offset-y bottom left :close-on-content-click="false" v-model="menu">
     <template v-slot:activator="{ on, attrs }">
       <v-badge overlap dot color="red" class="mr-4" :value="badge">
         <v-icon
@@ -29,6 +22,7 @@
       <v-list-item class="py-1 justify-space-between">
         <v-col class="text-caption font-weight-bold">お知らせ</v-col>
         <v-col
+          v-if="notifications.length !== 0"
           align="end"
           class="text-caption font-weight-bold blue--text text--darken-2"
           style="cursor: pointer"
@@ -37,6 +31,11 @@
         >
       </v-list-item>
       <v-divider></v-divider>
+      <v-list-item>
+        <v-col class="py-10 font-weight-bold grey--text text-lighten-5">
+          お知らせはありません
+        </v-col>
+      </v-list-item>
       <template v-for="(notification, index) in notifications">
         <v-list-item
           :key="`notification-${notification.id}`"
@@ -77,8 +76,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
   created() {
     this.getNotification();
@@ -92,9 +89,6 @@ export default {
       currentPage: 0,
       totalPage: 0,
     };
-  },
-  computed: {
-    ...mapGetters({ currentUser: "user/currentUser" }),
   },
   methods: {
     async checkNotification() {
@@ -115,7 +109,6 @@ export default {
       );
       this.currentPage = +response.headers["current-page"];
       this.totalPage = +response.headers["total-pages"];
-      console.log(this.totalPage);
       response.data.notifications.forEach((notification) =>
         this.notifications.push(notification)
       );
@@ -139,7 +132,7 @@ export default {
       const response = await this.$axios.patch(
         "/api/v1/users/current/notifications/checked"
       );
-      response.data.notifications
+      response.data.notifications;
       this.currentPage = +response.headers["current-page"];
       this.totalPage = +response.headers["total-pages"];
       this.notifications = response.data.notifications;
