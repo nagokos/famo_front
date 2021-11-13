@@ -101,7 +101,7 @@
                   outlined
                   height="42"
                   class="font-weight-bold"
-                  href="/api/v1/oauth/line"
+                  @click="snsLogin('line')"
                 >
                   <v-img
                     src="@/assets/line.png"
@@ -121,7 +121,7 @@
                   height="42"
                   :ripple="false"
                   class="font-weight-bold text-capitalize"
-                  href="/api/v1/oauth/google"
+                  @click="snsLogin('google')"
                 >
                   <v-img
                     src="@/assets/google.png"
@@ -169,6 +169,9 @@ export default {
     },
     setInActive() {
       this.inActive = true;
+    },
+    snsLogin(provider) {
+      window.location.href = `${process.env.VUE_APP_API_ENDPOINT}/api/v1/oauth/${provider}`;
     },
   },
 };
